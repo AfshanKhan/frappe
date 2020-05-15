@@ -38,7 +38,14 @@ def can_cache(no_cache=False):
 	return not no_cache
 
 
-def get_comment_list(doctype, name):
+def get_comment_list(doctype, name, reverse=True, fetch_all=False):
+	if fetch_all:
+			or_filters=[]
+	else:
+		or_filters=[
+			['owner', '=', frappe.session.user],
+			['published', '=', 1]]
+
 	comments = frappe.get_all('Comment',
 		fields=['name', 'creation', 'owner',
 				'comment_email', 'comment_by', 'content'],
@@ -47,9 +54,8 @@ def get_comment_list(doctype, name):
 			reference_name=name,
 			comment_type='Comment',
 		),
-		or_filters=[
-			['owner', '=', frappe.session.user],
-			['published', '=', 1]])
+		or_filters = or_filters
+	)
 
 	communications = frappe.get_all("Communication",
 		fields=['name', 'creation', 'owner', 'owner as comment_email',
@@ -63,7 +69,7 @@ def get_comment_list(doctype, name):
 			['cc', 'like', '%{0}%'.format(frappe.session.user)],
 			['bcc', 'like', '%{0}%'.format(frappe.session.user)]])
 
-	return sorted((comments + communications), key=lambda comment: comment['creation'], reverse=True)
+	return sorted((comments + communications), key=lambda comment: comment['creation'], reverse=reverse)
 
 
 def get_home_page():
