@@ -38,8 +38,8 @@ def can_cache(no_cache=False):
 	return not no_cache
 
 
-def get_comment_list(doctype, name, reverse=True, fetch_all=False):
-	if fetch_all:
+def get_comment_list(doctype, name, reverse=True, fetch_all_comment=False, fetch_all_communication=False):
+	if fetch_all_comment:
 			or_filters=[]
 	else:
 		or_filters=[
@@ -56,7 +56,13 @@ def get_comment_list(doctype, name, reverse=True, fetch_all=False):
 		),
 		or_filters = or_filters
 	)
-
+	if fetch_all_communication:
+		or_filters=[]
+	else:
+		or_filters=[
+			['recipients', 'like', '%{0}%'.format(frappe.session.user)],
+			['cc', 'like', '%{0}%'.format(frappe.session.user)],
+			['bcc', 'like', '%{0}%'.format(frappe.session.user)]]
 	communications = frappe.get_all("Communication",
 		fields=['name', 'creation', 'owner', 'owner as comment_email',
 				'sender_full_name as comment_by', 'content', 'recipients'],
@@ -64,10 +70,8 @@ def get_comment_list(doctype, name, reverse=True, fetch_all=False):
 			reference_doctype=doctype,
 			reference_name=name,
 		),
-		or_filters=[
-			['recipients', 'like', '%{0}%'.format(frappe.session.user)],
-			['cc', 'like', '%{0}%'.format(frappe.session.user)],
-			['bcc', 'like', '%{0}%'.format(frappe.session.user)]])
+		or_filters=or_filters
+		)
 
 	return sorted((comments + communications), key=lambda comment: comment['creation'], reverse=reverse)
 
