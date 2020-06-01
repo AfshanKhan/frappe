@@ -1,6 +1,8 @@
 {% for d in results %}
 <div class="search-result-item mb-4">
 	<a href="{{ d.route }}"><b>{{ d.title }}</b></a>
-	<p class="m-0">{{ d.preview }}</p>
+	{% if d.preview %}
+		<p class="m-0">{{ d.preview }}</p>
+	{% endif %}
 </div>
 {% endfor %}
