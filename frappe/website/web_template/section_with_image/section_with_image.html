@@ -1,5 +1,9 @@
+{% if title %}
 <h2 class="section-title">{{ title }}</h2>
+{% endif %}
+{% if subtitle %}
 <p class="section-description">{{ subtitle }}</p>
+{% endif %}
 
 {{ frappe.render_template('templates/includes/image_with_blur.html', {
 	"src": image,

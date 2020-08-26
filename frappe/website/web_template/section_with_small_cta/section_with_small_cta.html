@@ -1,8 +1,12 @@
 <div class="section-cta-container">
 	<div class="section-small-cta">
 		<div>
+			{% if title %}
 			<h2 class="title">{{ title }}</h2>
+			{% endif %}
+			{% if subtitle %}
 			<p class="subtitle">{{ subtitle }}</p>
+			{% endif %}
 		</div>
 		<div>
 			<a href="{{ cta_url }}" class="btn btn-lg btn-primary">{{ cta_label }}</a>
